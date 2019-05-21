@@ -165,7 +165,7 @@ export default class CircularSlider extends PureComponent {
                 return (
                   <LinearGradient key={i} id={getGradientId(i)} x1={fromX.toFixed(2)} y1={fromY.toFixed(2)} x2={toX.toFixed(2)} y2={toY.toFixed(2)}>
                     <Stop offset="0%" stopColor={fromColor} />
-                    <Stop offset="1" stopColor={toColor} />
+                <Stop offset="100%" stopColor={toColor} />
                   </LinearGradient>
                 )
               })
@@ -176,7 +176,7 @@ export default class CircularSlider extends PureComponent {
             ##### Circle
           */}
 
-          <G transform={{ translate: `${strokeWidth/2 + radius + 1}, ${strokeWidth/2 + radius + 1}` }}>
+      <G x={`${strokeWidth/2 + radius + 1}`} y={`${strokeWidth/2 + radius + 1}`} transform={{ translate: `${strokeWidth/2 + radius + 1}, ${strokeWidth/2 + radius + 1}` }}>
             <Circle
               r={radius}
               strokeWidth={strokeWidth}
@@ -213,6 +213,8 @@ export default class CircularSlider extends PureComponent {
             */}
 
             <G
+            x={`${stop.toX}`}
+            y={`${stop.toY}`}
               fill={gradientColorTo}
               transform={{ translate: `${stop.toX}, ${stop.toY}` }}
               onPressIn={() => this.setState({ angleLength: angleLength + Math.PI / 2 })}
@@ -234,6 +236,8 @@ export default class CircularSlider extends PureComponent {
             */}
 
             <G
+            x={`${start.fromX}`}
+            y={`${start.fromY}`}
               fill={gradientColorFrom}
               transform={{ translate: `${start.fromX}, ${start.fromY}` }}
               onPressIn={() => this.setState({ startAngle: startAngle - Math.PI / 2, angleLength: angleLength + Math.PI / 2 })}
