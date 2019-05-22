@@ -65,6 +65,11 @@ startIcon: PropTypes.element,
 showStopKnob: PropTypes.bool,
 showStartKnob: PropTypes.bool,
 keepArcVisible: PropTypes.bool,
+roundedEnds: PropTypes.bool,
+allowKnobBeyondLimits: PropTypes.bool,
+startKnobStrokeColor: PropTypes.string,
+startKnobFillColor: PropTypes.string,
+knobRadius: PropTypes.number,
 }
 
 static defaultProps = {
@@ -78,6 +83,10 @@ bgCircleColor: '#171717',
 showStopKnob: true,
 showStartKnob: true,
 keepArcVisible: false,
+roundedEnds: false,
+allowKnobBeyondLimits: true,
+startKnobStrokeColor: '#fff',
+startKnobFillColor: '#ff9800',
 }
 
 state = {
@@ -100,7 +109,7 @@ onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 onPanResponderGrant: (evt, gestureState) => this.setCircleCenter(),
   onPanResponderMove: (evt, { moveX, moveY }) => {
     const { circleCenterX, circleCenterY } = this.state;
-    const { angleLength, startAngle, onUpdate } = this.props;
+    const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
 
     const currentAngleStop = (startAngle + angleLength) % (2 * Math.PI);
     let newAngle = Math.atan2(moveY - circleCenterY, moveX - circleCenterX) + Math.PI/2;
@@ -115,7 +124,13 @@ onPanResponderGrant: (evt, gestureState) => this.setCircleCenter(),
       newAngleLength += 2 * Math.PI;
     }
 
-    onUpdate({ startAngle: newAngle, angleLength: newAngleLength % (2 * Math.PI) });
+    newAngleLength = newAngleLength % (2 * Math.PI);
+
+    if (!allowKnobBeyondLimits && newAngleLength >= this.initialAngleLength) {
+      return;
+    }
+
+    onUpdate({ startAngle: newAngle, angleLength: newAngleLength });
   },
 });
 
@@ -125,13 +140,17 @@ this._wakePanResponder = PanResponder.create({
   onPanResponderGrant: (evt, gestureState) => this.setCircleCenter(),
   onPanResponderMove: (evt, { moveX, moveY }) => {
     const { circleCenterX, circleCenterY } = this.state;
-    const { angleLength, startAngle, onUpdate } = this.props;
+    const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
 
     let newAngle = Math.atan2(moveY - circleCenterY, moveX - circleCenterX) + Math.PI/2;
     let newAngleLength = (newAngle - startAngle) % (2 * Math.PI);
 
     if (newAngleLength < 0) {
       newAngleLength += 2 * Math.PI;
+    }
+
+    if (!allowKnobBeyondLimits && newAngleLength >= this.initialAngleLength) {
+      return;
     }
 
     onUpdate({ startAngle, angleLength: newAngleLength });
@@ -172,6 +191,10 @@ const {
   showStopKnob,
   showStartKnob,
   keepArcVisible,
+  roundedEnds,
+  startKnobStrokeColor,
+  startKnobFillColor,
+  knobRadius,
 } = this.props;
 
 const containerWidth = this.getContainerWidth();
@@ -228,14 +251,31 @@ return (
             const { fromX, fromY, toX, toY } = calculateArcCircle(i, segments, radius, sAngle, aLength);
             const d = `M ${fromX.toFixed(2)} ${fromY.toFixed(2)} A ${radius} ${radius} 0 0 1 ${toX.toFixed(2)} ${toY.toFixed(2)}`;
 
+            const cornerRadius = (strokeWidth * 0.4933);
             return (
-              <Path
-                d={d}
-                key={i}
-                strokeWidth={strokeWidth}
-                stroke={`url(#${getGradientId(i)})`}
-                fill="transparent"
-              />
+              <React.Fragment key={i}>
+                <Path
+                  d={d}
+                  key={i}
+                  strokeWidth={strokeWidth}
+                  stroke={`url(#${getGradientId(i)})`}
+                  fill="transparent"
+                />
+                {i === 0 && roundedEnds && (<Circle
+                  key={`${i}c1`}
+                  cx={fromX}
+                  cy={fromY}
+                  r={cornerRadius}
+                  fill={gradientColorFrom}
+                />)}
+                {i === (segments - 1) && roundedEnds && (<Circle
+                  key={`${i}c2`}
+                  cx={toX}
+                  cy={toY}
+                  r={cornerRadius}
+                  fill={gradientColorTo}
+                />)}
+              </React.Fragment>
             )
           })
         }
@@ -253,7 +293,7 @@ return (
             {...this._wakePanResponder.panHandlers}
           >
             <Circle
-              r={(strokeWidth - 1) / 2}
+              r={knobRadius ? knobRadius : (strokeWidth - 1) / 2}
               fill={bgCircleColor}
               stroke={gradientColorTo}
               strokeWidth="1"
@@ -277,9 +317,9 @@ return (
             {...this._sleepPanResponder.panHandlers}
           >
             <Circle
-              r={(strokeWidth - 1) / 2}
-              fill={bgCircleColor}
-              stroke={gradientColorFrom}
+              r={knobRadius ? knobRadius : (strokeWidth - 1) / 2}
+              fill={startKnobFillColor}
+              stroke={startKnobStrokeColor}
               strokeWidth="1"
             />
             {
