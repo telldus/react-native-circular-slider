@@ -204,12 +204,24 @@ const containerWidth = this.getContainerWidth();
 const start = calculateArcCircle(0, segments, radius, startAngle, angleLength);
 const stop = calculateArcCircle(segments - 1, segments, radius, startAngle, angleLength);
 
+// To make the knob does not get clipped when it is larger than slider.
+const knobSizeToAccount = knobRadius + knobStrokeWidth;
+const contWidthWithKnobSize = containerWidth + knobSizeToAccount;
+
+// SVG will always stay left/top aligned , So tweak viewbox x & y and make sure it is aligned center.
+const viewBoxX = knobSizeToAccount / 2;
+const viewBoxY = knobSizeToAccount / 2;
+
 return (
-  <View style={{ width: containerWidth, height: containerWidth }} onLayout={this.onLayout}>
+  <View style={{
+    width: contWidthWithKnobSize,
+    height: contWidthWithKnobSize,
+  }} onLayout={this.onLayout}>
     <Svg
-      height={containerWidth}
-      width={containerWidth}
+      height={contWidthWithKnobSize}
+      width={contWidthWithKnobSize}
       ref={circle => this._circle = circle}
+      viewBox={`${-viewBoxX} ${-viewBoxY} ${contWidthWithKnobSize} ${contWidthWithKnobSize}`}
     >
       <Defs>
         {
