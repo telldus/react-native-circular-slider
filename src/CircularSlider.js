@@ -70,6 +70,7 @@ allowKnobBeyondLimits: PropTypes.bool,
 startKnobStrokeColor: PropTypes.string,
 startKnobFillColor: PropTypes.string,
 knobRadius: PropTypes.number,
+knobStrokeWidth: PropTypes.number,
 }
 
 static defaultProps = {
@@ -195,6 +196,7 @@ const {
   startKnobStrokeColor,
   startKnobFillColor,
   knobRadius,
+  knobStrokeWidth,
 } = this.props;
 
 const containerWidth = this.getContainerWidth();
@@ -296,7 +298,7 @@ return (
               r={knobRadius ? knobRadius : (strokeWidth - 1) / 2}
               fill={bgCircleColor}
               stroke={gradientColorTo}
-              strokeWidth="1"
+              strokeWidth={knobStrokeWidth}
             />
             {
               stopIcon
@@ -320,7 +322,7 @@ return (
               r={knobRadius ? knobRadius : (strokeWidth - 1) / 2}
               fill={startKnobFillColor}
               stroke={startKnobStrokeColor}
-              strokeWidth="1"
+              strokeWidth={knobStrokeWidth}
             />
             {
               startIcon
