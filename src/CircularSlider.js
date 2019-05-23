@@ -166,6 +166,7 @@ this._pathPanResponder = PanResponder.create({
   onMoveShouldSetPanResponder: (evt, gestureState) => true,
   onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
   onPanResponderGrant: (evt, gestureState) => {
+    this.setCircleCenter();
     const { circleCenterX, circleCenterY } = this.state;
     const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
     const { moveX, moveY, x0, y0 } = gestureState;
