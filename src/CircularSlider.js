@@ -133,6 +133,7 @@ onPanResponderGrant: (evt, gestureState) => this.setCircleCenter(),
 
     onUpdate({ startAngle: newAngle, angleLength: newAngleLength });
   },
+  onPanResponderTerminationRequest: (evt, gestureState) => true,
 });
 
 this._wakePanResponder = PanResponder.create({
@@ -156,6 +157,39 @@ this._wakePanResponder = PanResponder.create({
 
     onUpdate({ startAngle, angleLength: newAngleLength });
   },
+  onPanResponderTerminationRequest: (evt, gestureState) => true,
+});
+
+this._pathPanResponder = PanResponder.create({
+  onStartShouldSetPanResponder: (evt, gestureState) => true,
+  onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+  onMoveShouldSetPanResponder: (evt, gestureState) => true,
+  onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+  onPanResponderGrant: (evt, gestureState) => {
+    const { circleCenterX, circleCenterY } = this.state;
+    const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
+    const { moveX, moveY, x0, y0 } = gestureState;
+    const currentAngleStop = (startAngle + angleLength) % (2 * Math.PI);
+    let newAngle = Math.atan2(y0 - circleCenterY, x0 - circleCenterX) + Math.PI/2;
+
+    if (newAngle < 0) {
+      newAngle += 2 * Math.PI;
+    }
+
+    let newAngleLength = currentAngleStop - newAngle;
+
+    if (newAngleLength < 0) {
+      newAngleLength += 2 * Math.PI;
+    }
+
+    newAngleLength = newAngleLength % (2 * Math.PI);
+    if (!allowKnobBeyondLimits && newAngleLength >= this.initialAngleLength) {
+      return;
+    }
+
+    onUpdate({ startAngle: newAngle, angleLength: newAngleLength });
+  },
+  onPanResponderTerminationRequest: (evt, gestureState) => true,
 });
 }
 
@@ -268,13 +302,6 @@ return (
             const cornerRadius = (strokeWidth * 0.4933);
             return (
               <React.Fragment key={i}>
-                <Path
-                  d={d}
-                  key={i}
-                  strokeWidth={strokeWidth}
-                  stroke={`url(#${getGradientId(i)})`}
-                  fill="transparent"
-                />
                 {i === 0 && roundedEnds && (<Circle
                   key={`${i}c1`}
                   cx={fromX}
@@ -289,6 +316,14 @@ return (
                   r={cornerRadius}
                   fill={gradientColorTo}
                 />)}
+                <Path
+                  d={d}
+                  key={i}
+                  strokeWidth={strokeWidth}
+                  stroke={`url(#${getGradientId(i)})`}
+                  fill="transparent"
+                  {...this._pathPanResponder.panHandlers}
+                />
               </React.Fragment>
             )
           })
