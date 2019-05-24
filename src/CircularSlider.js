@@ -67,8 +67,8 @@ showStartKnob: PropTypes.bool,
 keepArcVisible: PropTypes.bool,
 roundedEnds: PropTypes.bool,
 allowKnobBeyondLimits: PropTypes.bool,
-startKnobStrokeColor: PropTypes.string,
-startKnobFillColor: PropTypes.string,
+knobStrokeColor: PropTypes.string,
+knobFillColor: PropTypes.string,
 knobRadius: PropTypes.number,
 knobStrokeWidth: PropTypes.number,
 }
@@ -86,8 +86,8 @@ showStartKnob: true,
 keepArcVisible: false,
 roundedEnds: false,
 allowKnobBeyondLimits: true,
-startKnobStrokeColor: '#fff',
-startKnobFillColor: '#ff9800',
+knobStrokeColor: '#fff',
+knobFillColor: '#ff9800',
 }
 
 state = {
@@ -222,8 +222,8 @@ const {
   showStartKnob,
   keepArcVisible,
   roundedEnds,
-  startKnobStrokeColor,
-  startKnobFillColor,
+  knobStrokeColor,
+  knobFillColor,
   knobRadius,
   knobStrokeWidth,
 } = this.props;
@@ -338,8 +338,8 @@ return (
           >
             <Circle
               r={knobRadius ? knobRadius : (strokeWidth - 1) / 2}
-              fill={bgCircleColor}
-              stroke={gradientColorTo}
+              fill={knobFillColor}
+              stroke={knobStrokeColor}
               strokeWidth={knobStrokeWidth}
             />
             {
@@ -362,8 +362,8 @@ return (
           >
             <Circle
               r={knobRadius ? knobRadius : (strokeWidth - 1) / 2}
-              fill={startKnobFillColor}
-              stroke={startKnobStrokeColor}
+              fill={knobFillColor}
+              stroke={knobStrokeColor}
               strokeWidth={knobStrokeWidth}
             />
             {
