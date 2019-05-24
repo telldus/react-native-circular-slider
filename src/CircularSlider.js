@@ -71,6 +71,7 @@ knobStrokeColor: PropTypes.string,
 knobFillColor: PropTypes.string,
 knobRadius: PropTypes.number,
 knobStrokeWidth: PropTypes.number,
+maxAngleLength: PropTypes.number,
 }
 
 static defaultProps = {
@@ -98,9 +99,9 @@ circleCenterY: false,
 constructor(props) {
   super(props);
 
-  const { startAngle, angleLength } = this.props;
+  const { startAngle, angleLength, maxAngleLength } = this.props;
   this.initialStartAngle = startAngle;
-  this.initialAngleLength = angleLength;
+  this.initialAngleLength = maxAngleLength ? maxAngleLength : angleLength;
 }
 
 componentWillMount() {
