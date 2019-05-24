@@ -127,7 +127,7 @@ onPanResponderGrant: (evt, gestureState) => this.setCircleCenter(),
 
     newAngleLength = newAngleLength % (2 * Math.PI);
 
-    if (!allowKnobBeyondLimits && newAngleLength >= this.initialAngleLength) {
+    if (!allowKnobBeyondLimits && newAngleLength > this.initialAngleLength) {
       return;
     }
 
@@ -151,7 +151,7 @@ this._wakePanResponder = PanResponder.create({
       newAngleLength += 2 * Math.PI;
     }
 
-    if (!allowKnobBeyondLimits && newAngleLength >= this.initialAngleLength) {
+    if (!allowKnobBeyondLimits && newAngleLength > this.initialAngleLength) {
       return;
     }
 
@@ -169,26 +169,20 @@ this._pathPanResponder = PanResponder.create({
     this.setCircleCenter();
     const { circleCenterX, circleCenterY } = this.state;
     const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
-    const { moveX, moveY, x0, y0 } = gestureState;
-    const currentAngleStop = (startAngle + angleLength) % (2 * Math.PI);
+
+    const { x0, y0 } = gestureState;
     let newAngle = Math.atan2(y0 - circleCenterY, x0 - circleCenterX) + Math.PI/2;
-
-    if (newAngle < 0) {
-      newAngle += 2 * Math.PI;
-    }
-
-    let newAngleLength = currentAngleStop - newAngle;
+    let newAngleLength = (newAngle - startAngle) % (2 * Math.PI);
 
     if (newAngleLength < 0) {
       newAngleLength += 2 * Math.PI;
     }
 
-    newAngleLength = newAngleLength % (2 * Math.PI);
-    if (!allowKnobBeyondLimits && newAngleLength >= this.initialAngleLength) {
+    if (!allowKnobBeyondLimits && newAngleLength > this.initialAngleLength) {
       return;
     }
 
-    onUpdate({ startAngle: newAngle, angleLength: newAngleLength });
+    onUpdate({ startAngle, angleLength: newAngleLength });
   },
   onPanResponderTerminationRequest: (evt, gestureState) => true,
 });
