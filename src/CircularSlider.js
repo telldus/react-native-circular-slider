@@ -72,6 +72,8 @@ knobFillColor: PropTypes.string,
 knobRadius: PropTypes.number,
 knobStrokeWidth: PropTypes.number,
 maxAngleLength: PropTypes.number,
+onReleaseStartKnob: PropTypes.func,
+onReleaseStopKnob: PropTypes.func,
 }
 
 static defaultProps = {
@@ -109,7 +111,7 @@ this._sleepPanResponder = PanResponder.create({
 onMoveShouldSetPanResponder: (evt, gestureState) => true,
 onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 onPanResponderGrant: (evt, gestureState) => this.setCircleCenter(),
-  onPanResponderMove: (evt, { moveX, moveY }) => {
+onPanResponderMove: (evt, { moveX, moveY }) => {
     const { circleCenterX, circleCenterY } = this.state;
     const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
 
@@ -134,6 +136,12 @@ onPanResponderGrant: (evt, gestureState) => this.setCircleCenter(),
 
     onUpdate({ startAngle: newAngle, angleLength: newAngleLength });
   },
+  onPanResponderRelease: (evt, gestureState) => {
+    const { onReleaseStartKnob } = this.props;
+    if (onReleaseStartKnob) {
+      onReleaseStartKnob();
+    }
+  },
   onPanResponderTerminationRequest: (evt, gestureState) => true,
 });
 
@@ -157,6 +165,12 @@ this._wakePanResponder = PanResponder.create({
     }
 
     onUpdate({ startAngle, angleLength: newAngleLength });
+  },
+  onPanResponderRelease: (evt, gestureState) => {
+    const { onReleaseStopKnob } = this.props;
+    if (onReleaseStopKnob) {
+      onReleaseStopKnob();
+    }
   },
   onPanResponderTerminationRequest: (evt, gestureState) => true,
 });
