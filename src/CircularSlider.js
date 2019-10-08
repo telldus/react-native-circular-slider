@@ -74,6 +74,7 @@ knobStrokeWidth: PropTypes.number,
 maxAngleLength: PropTypes.number,
 onReleaseStartKnob: PropTypes.func,
 onReleaseStopKnob: PropTypes.func,
+onPressSliderPath: PropTypes.func,
 }
 
 static defaultProps = {
@@ -183,7 +184,7 @@ this._pathPanResponder = PanResponder.create({
   onPanResponderGrant: (evt, gestureState) => {
     this.setCircleCenter();
     const { circleCenterX, circleCenterY } = this.state;
-    const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
+    const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits, onPressSliderPath } = this.props;
 
     const { x0, y0 } = gestureState;
     let newAngle = Math.atan2(y0 - circleCenterY, x0 - circleCenterX) + Math.PI/2;
@@ -196,8 +197,9 @@ this._pathPanResponder = PanResponder.create({
     if (!allowKnobBeyondLimits && newAngleLength > this.initialAngleLength) {
       return;
     }
-
-    onUpdate({ startAngle, angleLength: newAngleLength });
+    if (onPressSliderPath) {
+      onPressSliderPath({ startAngle, angleLength: newAngleLength });
+    }
   },
   onPanResponderTerminationRequest: (evt, gestureState) => true,
 });
