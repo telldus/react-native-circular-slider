@@ -75,6 +75,11 @@ maxAngleLength: PropTypes.number,
 onReleaseStartKnob: PropTypes.func,
 onReleaseStopKnob: PropTypes.func,
 onPressSliderPath: PropTypes.func,
+coverStyle: PropTypes.oneOfType([
+  PropTypes.number,
+  PropTypes.object,
+  PropTypes.array,
+]),
 }
 
 static defaultProps = {
@@ -243,6 +248,7 @@ const {
   knobFillColor,
   knobRadius,
   knobStrokeWidth,
+  coverStyle,
 } = this.props;
 
 const containerWidth = this.getContainerWidth();
@@ -259,10 +265,10 @@ const viewBoxX = knobSizeToAccount / 2;
 const viewBoxY = knobSizeToAccount / 2;
 
 return (
-  <View style={{
+  <View style={[{
     width: contWidthWithKnobSize,
     height: contWidthWithKnobSize,
-  }} onLayout={this.onLayout}>
+  }, coverStyle]} onLayout={this.onLayout}>
     <Svg
       height={contWidthWithKnobSize}
       width={contWidthWithKnobSize}
