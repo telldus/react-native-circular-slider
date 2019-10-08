@@ -80,6 +80,7 @@ static propTypes = {
 		PropTypes.object,
 		PropTypes.array,
 	]),
+	key: PropTypes.string,
 }
 
 static defaultProps = {
@@ -97,6 +98,7 @@ static defaultProps = {
 	allowKnobBeyondLimits: true,
 	knobStrokeColor: '#fff',
 	knobFillColor: '#ff9800',
+	key: '1',
 }
 
 state = {
@@ -252,6 +254,7 @@ render() {
 		knobRadius,
 		knobStrokeWidth,
 		coverStyle,
+		key,
 	} = this.props;
 
 	const containerWidth = this.getContainerWidth();
@@ -273,6 +276,7 @@ render() {
 			height: contWidthWithKnobSize,
 		}, coverStyle]} onLayout={this.onLayout}>
 			<Svg
+				key={key}
 				height={contWidthWithKnobSize}
 				width={contWidthWithKnobSize}
 				ref={circle => this._circle = circle}
