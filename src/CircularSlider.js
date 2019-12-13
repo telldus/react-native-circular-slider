@@ -6,6 +6,7 @@ import { interpolateHcl as interpolateGradient } from 'd3-interpolate';
 import ClockFace from './ClockFace';
 import PropTypes from 'prop-types'; // ES6
 
+const ADJUST_PX = 2;
 
 function calculateArcColor(index0, segments, gradientColorFrom, gradientColorTo) {
 	const interpolate = interpolateGradient(gradientColorFrom, gradientColorTo);
@@ -228,7 +229,7 @@ setCircleCenter = (callback) => {
 
 getContainerWidth() {
 	const { strokeWidth, radius } = this.props;
-	return strokeWidth + radius * 2 + 2;
+	return strokeWidth + radius * 2 + ADJUST_PX;
 }
 
 render() {
@@ -266,9 +267,9 @@ render() {
 	const knobSizeToAccount = knobRadius + knobStrokeWidth;
 	const contWidthWithKnobSize = containerWidth + knobSizeToAccount;
 
-	// SVG will always stay left/top aligned , So tweak viewbox x & y and make sure it is aligned center.
-	const viewBoxX = knobSizeToAccount / 2;
-	const viewBoxY = knobSizeToAccount / 2;
+	// tweak viewbox x & y and make sure it is aligned center.
+	const viewBoxX = radius + ADJUST_PX;
+	const viewBoxY = radius + ADJUST_PX;
 
 	return (
 		<View style={[{
@@ -280,7 +281,7 @@ render() {
 				height={contWidthWithKnobSize}
 				width={contWidthWithKnobSize}
 				ref={circle => this._circle = circle}
-				viewBox={`${-viewBoxX} ${-viewBoxY} ${contWidthWithKnobSize} ${contWidthWithKnobSize}`}
+				viewBox={`${viewBoxX} ${viewBoxY} ${contWidthWithKnobSize} ${contWidthWithKnobSize}`}
 			>
 				<Defs>
 					{
