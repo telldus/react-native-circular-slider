@@ -160,7 +160,7 @@ componentWillMount() {
 		onPanResponderGrant: (evt, gestureState) => this.setCircleCenter(),
 		onPanResponderMove: (evt, { moveX, moveY }) => {
 			const { circleCenterX, circleCenterY } = this.state;
-			const { angleLength, startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
+			const { startAngle, onUpdate, allowKnobBeyondLimits } = this.props;
 
 			let newAngle = Math.atan2(moveY - circleCenterY, moveX - circleCenterX) + Math.PI / 2;
 			let newAngleLength = (newAngle - startAngle) % (2 * Math.PI);
@@ -260,8 +260,8 @@ render() {
 
 	const containerWidth = this.getContainerWidth();
 
-	const start = calculateArcCircle(0, segments, radius, startAngle, angleLength);
-	const stop = calculateArcCircle(segments - 1, segments, radius, startAngle, angleLength);
+	const start = calculateArcCircle(0, segments, radius / 2, startAngle, angleLength);
+	const stop = calculateArcCircle(segments - 1, segments, radius / 2, startAngle, angleLength);
 
 	// To make the knob does not get clipped when it is larger than slider.
 	const knobSizeToAccount = knobRadius + knobStrokeWidth;
